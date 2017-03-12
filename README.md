@@ -9,3 +9,7 @@ I download the data file “PERM_Disclosure_Data_FY16.xlsx” on the webpage “
 To run the script and get query results to csv files:	python perm.py query
 To get the visualization-ready csv files:
 	python perm.py viz
+To get the visualization-ready html file for PERM:
+	python plot.py perm
+To get the visualization-ready html file for H1B:
+	python plot.py h1b
