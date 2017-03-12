@@ -22,8 +22,8 @@ US_STATES = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', '
 US_STATE_SHORT_dic = {'WA': 'Washington', 'DE': 'Delaware', 'WI': 'Wisconsin', 'WV': 'West Virginia', 'HI': 'Hawaii', 'FL': 'Florida', 'WY': 'Wyoming', 'NH': 'New Hampshire', 'NJ': 'New Jersey', 'NM': 'New Mexico', 'TX': 'Texas', 'LA': 'Louisiana', 'NC': 'North Carolina', 'ND': 'North Dakota', 'NE': 'Nebraska', 'TN': 'Tennessee', 'NY': 'New York', 'PA': 'Pennsylvania', 'CA': 'California', 'NV': 'Nevada', 'VA': 'Virginia', 'CO': 'Colorado', 'AK': 'Alaska', 'AL': 'Alabama', 'AR': 'Arkansas', 'VT': 'Vermont', 'IL': 'Illinois', 'GA': 'Georgia', 'IN': 'Indiana', 'IA': 'Iowa', 'OK': 'Oklahoma', 'AZ': 'Arizona', 'ID': 'Idaho', 'CT': 'Connecticut', 'ME': 'Maine', 'MD': 'Maryland', 'MA': 'Massachusetts', 'OH': 'Ohio', 'UT': 'Utah', 'MO': 'Missouri', 'MN': 'Minnesota', 'MI': 'Michigan', 'RI': 'Rhode Island', 'KS': 'Kansas', 'MT': 'Montana', 'MS': 'Mississippi', 'SC': 'South Carolina', 'KY': 'Kentucky', 'OR': 'Oregon', 'SD': 'South Dakota'}
 
 
-def plotPermChoropleth () :
-    df = pd.read_csv('./output/viz/PERM_Companies/_PERM_StateByCase.csv')
+def plotPermChoropleth (dataFilePath, outputPath):
+    df = pd.read_csv(dataFilePath)
     for col in df.columns:
         df[col] = df[col].astype(str)
     scl = [[0.0, 'rgb(242,240,247)'],[0.02, 'rgb(218,218,235)'],[0.03, 'rgb(188,189,220)'],\
@@ -69,13 +69,13 @@ def plotPermChoropleth () :
                  )
     fig = dict( data=data, layout=layout )
     # py.iplot( fig, filename='d3-cloropleth-map' )
-    plot(fig, filename = './output/viz/PERM_Companies/_PERM_Choropleth.html')
+    plot(fig, filename = outputPath)
     # plotly.offline.plot(data, filename = 'basic-line.html')
 
 
-def plotPermBarCharts () :
+def plotPermBarCharts (dataFilePath, outputPath) :
     for short_name in US_STATES:
-        with open('./output/viz/PERM_Companies/' + short_name + '.csv', 'rb') as csvfile:
+        with open(dataFilePath + short_name + '.csv', 'rb') as csvfile:
             stateData = list(csv.reader(csvfile))
         custom_style = Style(
               tooltip_font_size = 18,
@@ -97,11 +97,19 @@ def plotPermBarCharts () :
         for row in stateData[1:topX+1]:
             bar_chart.add(str(row[0]), float(row[1]), rounded_bars = 3)
         # bar_chart.render_in_browser()
-        bar_chart.render_to_file('./output/viz/PERM_Companies/svg/' + short_name + '.svg')
+        bar_chart.render_to_file(outputPath + short_name + '.svg')
 
 if __name__ == "__main__":
-    plotPermChoropleth()
-    plotPermBarCharts()
+
+    if (len(sys.argv) > 1):
+        if (sys.argv[1] == "perm"):
+            plotPermChoropleth('./output/viz/PERM_Companies/_PERM_StateByCase.csv', './output/viz/PERM_Companies/_PERM_Choropleth.html')
+            plotPermBarCharts('./output/viz/PERM_Companies/', './output/viz/PERM_Companies/svg/')
+        elif (sys.argv[1] == "h1b"):
+            plotPermChoropleth('./output/viz/H1B_Companies/state_count_workers.csv', './output/viz/H1B_Companies/_H1B_Choropleth.html')
+            plotPermBarCharts('./output/viz/H1B_Companies/', './output/viz/H1B_Companies/svg/')
+
+
 
 
 
