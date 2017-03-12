@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    #title {
+        font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+        font-size: 30px;
+    }
+    
+    /* for the menu bar */
+    ul, #subMenu{
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333;
+        width: 100%;
+        position: relative;
+        display: inline-block;
+    }
+
+    li {
+        float: left;
+        border-right:1px solid #bbb;
+        width: 24%;
+    }
+
+    li:last-child {
+        border-right: none;
+    }
+
+    li a {
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+    li a:hover:not(.active), #subMenu a:hover {
+        background-color: #111;
+    }
+    
+    .active {
+        background-color: #4CAF50;
+    }
+    
+    /* for the subMenu */
+/*
+    #subMenu {
+        overflow: hidden;
+        background-color: #333;
+        font-family: Arial;
+        width: 100%;
+    }
+*/
+
+    #subMenu a {
+        float: right;
+        border-right:1px solid #bbb;
+        font-size: 16px;
+        color: white;
+        text-align: center;
+        padding: 5px 5px;
+        text-decoration: none;
+        width: 49%;
+    }
+    
+    
+    /* for the drop down content */
+/*
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        overflow: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown a:hover {background-color: #f1f1f1}
+
+    .show {display:block;}
+*/
+
+    /* for the state table */
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        font-size: 15px;
+/*        width: 100%;*/
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 3px;
+        color: white;
+        background-color: #333;
+    }
+    
+    td:hover {
+        background-color: #4CAF50;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+</head>
+
+<body>
+    <center><p id="title">Pathway from F-1 Student to U.S. Citizen<br>
+        (Companies and Waiting-time analysis)
+    </p></center>
+    
+    <ul>
+      <li><a>F-1 STUDENT</a></li>
+      <li><a id="H1B"
+             onclick="selectH1B()">H-1B VISA</a></li>
+      <li><a class="active"
+             onclick="barSwitch('EB'); createSubMenu();"
+             id="EB">EB VISAS (GREEN CARD)</a></li>
+      <li><a>U.S. CITIZENSHIP</a></li>
+    </ul>
+    
+    <div id="subMenu"></div>
+    
+    <div id="PERMbarChartDIV"></div>
+
+    <div id="PERMchoroplethDIV"></div>
+    
+    <div id="EBWTiframeDIV"></div>
+    
+    <div id="stateTableDIV"></div>
+<!--
+    <table id="stateTable">
+      <tr id="row1"></tr>
+      <tr id="row2"></tr>
+    </table>
+-->
+<script>
+    US_STATES = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'];
+    var curBarState = "NY";
+    var isClicked = false;
+    var isSubMenuCreated = false;
+    var isWTSelected = false;
+    var isComSelected = false;
+    
+    function setClickedaRtrState(state) {
+        isClicked = true;
+        curBarState = state;
+    }
+    function switchTo(toState) {
+        document.getElementById("PERMbarChart").src = "./output/viz/PERM_Companies/svg/"+toState+".svg";
+    }
+    function swtichBack() {
+        if (!isClicked){
+            document.getElementById("PERMbarChart").src = "./output/viz/PERM_Companies/svg/"+curBarState+".svg";
+        }
+        isClicked = false;
+    }
+    function createStateTable() {
+        var stateTable = document.createElement("TABLE");
+        stateTable.setAttribute("id", "stateTable")
+        var row1 = stateTable.insertRow(0);
+        row1.setAttribute("id", "row1");
+        var row2 = stateTable.insertRow(1);
+        row2.setAttribute("id", "row2");
+        for(var i = 0; i < 50; i++) {
+            var curMapState = US_STATES[i];
+            var cell;
+            if (i < 25) {
+                cell = row1.insertCell();
+            } else {
+                cell = row2.insertCell();
+            }
+            cell.innerHTML = curMapState;
+            cell.setAttribute("onmouseover", "switchTo('"+curMapState+"')");
+            cell.setAttribute("onmouseout", "swtichBack()");
+            cell.setAttribute("onclick", "setClickedaRtrState('"+curMapState+"')");
+        }
+        document.getElementById("stateTableDIV").appendChild(stateTable);
+    }
+    function barSwitch(newTab) {
+        var h1bBar = document.getElementById("H1B");
+        var ebBar = document.getElementById("EB");
+        if (newTab == "H1B") {
+            ebBar.classList.remove("active");
+            h1bBar.classList.add("active");
+        } else if (newTab == "EB") {
+            h1bBar.classList.remove("active");
+            ebBar.classList.add("active");
+        }
+    }
+    function createSubMenu () {
+        if (!isSubMenuCreated) {
+            isSubMenuCreated = true;
+            var subMenu = document.getElementById("subMenu");
+            var comA = document.createElement('a');
+            comA.innerHTML = "Company";
+            comA.setAttribute("id", "comA");
+            comA.setAttribute("onClick", "selectCompany()")
+            
+            var wtA = document.createElement('a');
+            wtA.setAttribute("id", "wtA");
+            wtA.innerHTML = "Waiting Time";
+            wtA.setAttribute("onClick", "selectWT()")
+            
+            subMenu.appendChild(wtA);
+            subMenu.appendChild(comA);
+        }
+    }
+    function deleteSubMenu () {
+        var div = document.getElementById('subMenu');
+        while(div.firstChild){
+            div.removeChild(div.firstChild);
+        }
+        isSubMenuCreated = false;
+    }
+    function selectCompany() {
+        if (!isComSelected) {
+            isComSelected = true;
+            isWTSelected = false;
+            /* highlight the selected tab */
+            var comA = document.getElementById("comA");
+            var wtA = document.getElementById("wtA");
+            comA.setAttribute("class", "active");
+            wtA.classList.remove("active");
+            /* delete elements for EB WaitingTime */
+            var EBWTiframeDIV = document.getElementById("EBWTiframeDIV");
+            while(EBWTiframeDIV.firstChild){
+                EBWTiframeDIV.removeChild(EBWTiframeDIV.firstChild);
+            }
+            /* create elements for PERM company */
+            var PERMbarChart = document.createElement("IFRAME");
+            PERMbarChart.setAttribute("id", "PERMbarChart");
+            PERMbarChart.src = "./output/viz/PERM_Companies/svg/NY.svg";
+            PERMbarChart.width = "700";
+            PERMbarChart.height = "500";
+            PERMbarChart.setAttribute("align", "left");
+            PERMbarChart.style.border = "none";
+            document.getElementById("PERMbarChartDIV").appendChild(PERMbarChart);
+            
+            var PERMchoropleth = document.createElement("IFRAME");
+            PERMchoropleth.setAttribute("id", "PERMchoropleth");
+            PERMchoropleth.src = "./output/viz/PERM_Companies/_PERM_Choropleth.html";
+            PERMchoropleth.width = "700";
+            PERMchoropleth.height = "480";
+            PERMchoropleth.setAttribute("align", "left");
+            PERMchoropleth.style.border = "none";
+            document.getElementById("PERMchoroplethDIV").appendChild(PERMchoropleth);
+            
+            createStateTable();
+        }
+        
+    }
+    function selectWT() {
+        if (!isWTSelected) {
+            isWTSelected = true;
+            isComSelected = false;
+            /* highlight the selected tab */
+            var comA = document.getElementById("comA");
+            var wtA = document.getElementById("wtA");
+            wtA.setAttribute("class", "active");
+            comA.classList.remove("active");
+            /* delete elements for PERM company */
+            var PERMbarChartDIV = document.getElementById("PERMbarChartDIV");
+            while(PERMbarChartDIV.firstChild){
+                PERMbarChartDIV.removeChild(PERMbarChartDIV.firstChild);
+            }
+            var PERMchoroplethDIV = document.getElementById("PERMchoroplethDIV");
+            while(PERMchoroplethDIV.firstChild){
+                PERMchoroplethDIV.removeChild(PERMchoroplethDIV.firstChild);
+            }
+            var stateTableDIV = document.getElementById("stateTableDIV");
+            while(stateTableDIV.firstChild){
+                stateTableDIV.removeChild(stateTableDIV.firstChild);
+            }
+            /* create elements for EB Waiting Time */
+            var EBWTiframe = document.createElement("IFRAME");
+            EBWTiframe.setAttribute("id", "EB_WT");
+            EBWTiframe.src = "./output/viz/EB_WaitingTime/India_China_EB2.html";
+            EBWTiframe.width = "1000";
+            EBWTiframe.height = "650";
+            EBWTiframe.setAttribute("align", "left");
+            EBWTiframe.style.border = "none";
+            document.getElementById("EBWTiframeDIV").appendChild(EBWTiframe);
+        }
+    }
+    function selectH1B() {
+        barSwitch('H1B');
+        deleteSubMenu(); 
+        /* delete elements of PERM company */
+        var PERMbarChartDIV = document.getElementById("PERMbarChartDIV");
+        while(PERMbarChartDIV.firstChild){
+            PERMbarChartDIV.removeChild(PERMbarChartDIV.firstChild);
+        }
+        var PERMchoroplethDIV = document.getElementById("PERMchoroplethDIV");
+        while(PERMchoroplethDIV.firstChild){
+            PERMchoroplethDIV.removeChild(PERMchoroplethDIV.firstChild);
+        }
+        var stateTableDIV = document.getElementById("stateTableDIV");
+        while(stateTableDIV.firstChild){
+            stateTableDIV.removeChild(stateTableDIV.firstChild);
+        }
+        /* delete elements of EB Waiting Time */
+        var EBWTiframeDIV = document.getElementById("EBWTiframeDIV");
+        while(EBWTiframeDIV.firstChild){
+            EBWTiframeDIV.removeChild(EBWTiframeDIV.firstChild);
+        }
+    }
+    
+    
+    
+</script>
+</body>
+</html>

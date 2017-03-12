@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<head>
+<title>漂亮的带箭头的流程图 - 烈火学院 Liehuo.Net</title>
+<meta http-equiv="content-type" content="text/html;charset=gb2312">
+<style type="text/css">
+.help_step_box{background:#f1f7e4;height:55px;overflow:hidden;border-top:1px solid #FFF;}
+.help_step_item{float:left;height:55px;line-height:55px;padding:0 25px 0 45px;cursor:pointer;position:relative;font-size:14px;font-weight:bold;}
+.help_step_num{width:19px;height:19px;line-height:19px;position:absolute;text-align:center;top:18px;left:20px;font-size:16px;font-weight:bold;background:url(http://pic.veryhuo.com/allimg/1011/num.png);color:#156600;}
+.help_step_set{background:#27a806;color:#FFF;}
+.help_step_set .help_step_left{width:8px;height:55px;background:url(http://pic.veryhuo.com/allimg/1011/bak.jpg) left top no-repeat;position:absolute;left:0;top:0;}
+.help_step_set .help_step_right{width:8px;height:55px;background:url(http://pic.veryhuo.com/allimg/1011/bak.jpg) left bottom no-repeat; position:absolute;right:-8px;top:0;}
+</style>
+</head>
+<body>
+<div class="help_wrap">
+<div class="help_step_box fa">
+<div onclick="javascript:go_fa_step(1)" id="fa_1" class="help_step_item">
+<div class="help_step_num">1</div>
+拆开方便面
+<div class="help_step_right"></div>
+</div>
+<div onclick="javascript:go_fa_step(2)" id="fa_2" class="help_step_item help_step_set">
+<div class="help_step_left"></div>
+<div class="help_step_num">2</div>
+取出调料包
+<div class="help_step_right"></div>
+</div>
+<div onclick="javascript:go_fa_step(3)" id="fa_3" class="help_step_item">
+<div class="help_step_left"></div>
+<div class="help_step_num">3</div>
+加热水泡3~5分钟
+<div class="help_step_right"></div>
+</div>
+<div onclick="javascript:go_fa_step(4)" id="fa_4" class="help_step_item">
+<div class="help_step_left"></div>
+<div class="help_step_num">4</div>
+加入调料并搅拌
+<div class="help_step_right"></div>
+</div>
+<div onclick="javascript:go_fa_step(5)" id="fa_5" class="help_step_item">
+<div class="help_step_left"></div>
+<div class="help_step_num">5</div>
+可以吃了
+</div>
+</div>
+</div>
+</div>
+<!-- 烈,火,網 liehuo,net 欢迎复制,拒绝恶意采集 ｌｉｅｈｕｏ．ｎｅｔ -->
+<script language="javascript">
+function go_fa_step(id){
+for (i=1;i<6;i++){
+document.getElementById("fa_"+i).className='help_step_item';
+}
+document.getElementById("fa_"+id).className+=" help_step_set"
+}
+</script>
+</body>
+</html> <br /><center>如不能显示效果，请按Ctrl+F5刷新本页，更多网页代码：<a href='http://www.veryhuo.com/' target='_blank'>http://www.veryhuo.com/</a></center>
