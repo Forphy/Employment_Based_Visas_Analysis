@@ -99,6 +99,99 @@ def plotPermBarCharts (dataFilePath, outputPath) :
         # bar_chart.render_in_browser()
         bar_chart.render_to_file(outputPath + short_name + '.svg')
 
+def plotPermPeers(outputPath) :
+    # Do you know your peers(people majoring in Computer-related subjects)?
+    # What are their highest degree? (pie chart)
+    # How long have they been graduated? (vertical bar chart)
+    # How experienced are they in CS/CE field? (bar chart)
+    # Where do they come from?
+    with open('./output/queries/q1_1.csv', 'rb') as csvfile:
+        degreeData = list(csv.reader(csvfile))
+    # Bachelor's	Master's	Doctorate
+    pie_chart = pygal.Pie(inner_radius=.4)
+    pie_chart.title = 'What are their highest degree?'
+    pie_chart.add("Bachelor's", int(degreeData[1][0]))
+    pie_chart.add("Master's", int(degreeData[1][1]))
+    pie_chart.add("Doctorate", int(degreeData[1][2]))
+    # pie_chart.render_in_browser()
+    pie_chart.render_to_file(outputPath + 'highest_degrees.svg')
+
+    with open('./output/queries/q1_2.csv', 'rb') as csvfile:
+        gradYear_Count = list(csv.reader(csvfile))
+    # Graduation_year   count
+    custom_style = Style(label_font_size=18, legend_font_size=18, title_font_size=28)
+    line_chart = pygal.Bar(width=1400, style=custom_style, legend_at_bottom=True)
+    line_chart.title = 'How long have they been graduated?'
+    line_chart.x_labels = [int(row[0]) for row in gradYear_Count[1:]]
+    line_chart.add('Amount of Applicants', [int(row[1]) for row in gradYear_Count[1:]])
+    # line_chart.render_in_browser()
+    line_chart.render_to_file(outputPath + 'gradYear_Count.svg')
+
+    with open('./output/viz/PERM_Peers/mon_Exp_Range_Count.csv', 'rb') as csvfile:
+        monExp_Count = list(csv.reader(csvfile))
+    # Months_of_Experience_Range  count
+    custom_style = Style(label_font_size = 20, title_font_size=28)
+    line_chart = pygal.Bar(style=custom_style, legend_at_bottom=True)
+    line_chart.title = 'How many months of experience do they have?'
+    line_chart.x_labels = [row[0] for row in monExp_Count[1:]]
+    line_chart.add('Amount of Applicants', [float(row[1]) for row in monExp_Count[1:]])
+    # line_chart.render_in_browser()
+    line_chart.render_to_file(outputPath + 'monExp_Count.svg')
+
+    #using plotly to plot geomap
+    plotlyGeoMap('ctryAbbr_count_Plotly', 'whereTheyFrom')
+    plotlyGeoMap('ctryAbbr_count_Plotly_NoIndia', 'whereTheyFrom_NoIndia')
+    plotlyGeoMap('ctryAbbr_count_Plotly_NoIndiaChina', 'whereTheyFrom_NoIndiaChina')
+    plotlyGeoMap('ctryAbbr_count_Plotly_NoIndiaChinaCanada', 'whereTheyFrom_NoIndiaChinaCanada')
+
+    #using pygal to plot geomap
+    # with open('./output/viz/PERM_Peers/ctryAbbr_count.csv', 'rb') as csvfile:
+    #     abbr_count_list = list(csv.reader(csvfile))
+    # abbr_count_dict = {}
+    # for row in abbr_count_list[1:]:
+    #     abbr_count_dict[row[0]] = int(row[1])
+    #
+    #
+    # worldmap_chart = pygal.maps.world.World()
+    # worldmap_chart.title = 'Where are they from?'
+    # worldmap_chart.add('2016 Fiscal Year', abbr_count_dict)
+    # worldmap_chart.render_in_browser()
+
+def plotlyGeoMap(inputFile, outputFile):
+    df = pd.read_csv('./output/viz/PERM_Peers/'+inputFile+'.csv')
+    # abbrCountryName   count
+    data = [ dict(
+            type = 'choropleth',
+            locations = df['abbr'],
+            z = df['count'],
+            text = df['countryName'],
+            colorscale = [[0,"rgb(5, 10, 172)"],[0.15,"rgb(40, 60, 190)"],[0.3,"rgb(70, 100, 245)"],\
+                [0.4,"rgb(90, 120, 245)"],[0.5,"rgb(106, 137, 247)"],[1,"rgb(220, 220, 220)"]],
+            autocolorscale = True,
+            reversescale = False,
+            marker = dict(
+                line = dict (
+                    color = 'rgb(180,180,180)',
+                    width = 0.5
+                ) ),
+            colorbar = dict(
+                autotick = False,
+                tickprefix = '$',
+                title = 'GDP<br>Billions US$'),
+          ) ]
+    layout = dict(
+        title = 'Where are they from?',
+        geo = dict(
+            showframe = False,
+            showcoastlines = False,
+            projection = dict(
+                type = 'Mercator'
+            )
+        )
+    )
+    fig = dict( data=data, layout=layout )
+    plot(fig, validate=False, filename='./output/viz/PERM_Peers/'+outputFile+'.html' )
+
 if __name__ == "__main__":
 
     if (len(sys.argv) > 1):
@@ -108,6 +201,8 @@ if __name__ == "__main__":
         elif (sys.argv[1] == "h1b"):
             plotPermChoropleth('./output/viz/H1B_Companies/state_count_workers.csv', './output/viz/H1B_Companies/_H1B_Choropleth.html')
             plotPermBarCharts('./output/viz/H1B_Companies/', './output/viz/H1B_Companies/svg/')
+        elif (sys.argv[1] == "peers"):
+            plotPermPeers('./output/viz/PERM_Peers/')
 
 
 
