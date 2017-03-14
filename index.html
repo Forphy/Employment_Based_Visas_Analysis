@@ -108,12 +108,14 @@
     }
     
     /* to expand the web page downer*/
+/*
     #lineBreaker {
         position: relative;
         left: 100px;
         top: 800px;
         color: white;
     }
+*/
 </style>
 </head>
 
@@ -148,7 +150,7 @@
     <div id="stateTableDIV"></div>
     <div id="EBWTTableDIV"></div>
     <div id="hiddenButtonsDIV"</div>
-    <p id="lineBreaker">.</br> .</br> .</br> .</br> .</br></p>
+<!--    <p id="lineBreaker">.</br> .</br> .</br> .</br> .</br></p>-->
     <div id="authorInfo"></div>
 
 <script>
@@ -205,7 +207,7 @@
         if (visaType == 'H1B') {
             stateTableDIV.style.left = "715px";
             stateTableDIV.style.top = "789px";
-        } else if (visaType == 'EB'){
+        } else if (visaType == 'PERM'){
             stateTableDIV.style.left = "715px";
             stateTableDIV.style.top = "810px";
         }
@@ -313,7 +315,7 @@
             PERMchoropleth.style.border = "none";
             document.getElementById("PERMchoroplethDIV").appendChild(PERMchoropleth);
             
-            createStateTable('EB');
+            createStateTable('PERM');
             createBarChartTitleDIV('EB');
             createChoroPlethTitle('EB');
             createDescription('comA');
@@ -473,6 +475,7 @@
         subTitle.style.top = subTitleTop;
         subTitle.style.fontSize = "20px";
         subTitle.innerHTML = "(ranked by how many foreign workers they support)";
+        subTitle.style.paddingBottom = "200px";
         
         var bigStateName = document.createElement("p");
         bigStateName.style.position = "absolute";
@@ -494,6 +497,7 @@
         mainTitle.style.left = "950px";
         mainTitle.style.top = "825px";
         mainTitle.style.fontSize = "23px";
+        mainTitle.style.paddingBottom = "200px";
         if (visaType == 'H1B') {
             mainTitle.innerHTML = "H1B applicants in each state";
         } else if (visaType == 'EB') {
@@ -536,8 +540,6 @@
             document.getElementById("EB_WT").src = "./output/viz/EB_WaitingTime/hiddenGraph_"+graphNum+".html";
         }
     }
-    
-    
     
 </script>
 </body>
