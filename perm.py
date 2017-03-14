@@ -314,7 +314,7 @@ def q3(permData_original):
     outputCsv('./output/queries/q3_1.csv', workState_count_list)
 
 def viz(permData_original):
-    # what are the top 30 foreign-worker-friendly companies in each state?
+    ############# what are the top 30 foreign-worker-friendly companies in each state?
     # How many foreign wokers did each of these company supported for EB visa in 2016?
     JOB_INFO_WORK_STATE_idx = getColNum(permData_original, "JOB_INFO_WORK_STATE")
     EMPLOYER_NAME_idx = getColNum(permData_original, "EMPLOYER_NAME")
@@ -335,7 +335,7 @@ def viz(permData_original):
         company_count_list.insert(0, ["Company", "new_foreign_worker_count"])
         outputCsv('./output/viz/PERM_Companies/' + workState +'.csv', company_count_list[:30])
 
-    # What are the top 30 foreign-worker-friendly companies across the U.S.?
+    ###############What are the top 30 foreign-worker-friendly companies across the U.S.?
     # How many foreign wokers did each of these company supported for EB visa in 2016?
     # Which state is each of them from?
     company_count_dic = {}
@@ -362,7 +362,7 @@ def viz(permData_original):
     outputCsv('./output/viz/PERM_Companies/_US.csv', company_count_list[:30])
 
 
-    # How many foreign-workers applying for EB2/3 in each state?
+    ############### How many foreign-workers applying for EB2/3 in each state?
     state_caseCount_dic = {}
     for state_name in US_STATES:
         state_caseCount_dic[state_name] = 0
@@ -394,8 +394,9 @@ def viz(permData_original):
     outputCsv('./output/viz/PERM_Peers/mon_Exp_Range_Count.csv', avg_numMonth_count_list)
 
 
+
+    ########### Where are my peers from? match the FULL COUNTRY NAME with abbreviations
     #### Process .csv files for geomapping in pygal
-    # Where are my peers from? match the FULL COUNTRY NAME with abbreviations
     with open('./output/queries/q1_4.csv', 'rb') as csvfile:
         country_count = list(csv.reader(csvfile))
     # find the abbreviation for each country
@@ -436,7 +437,6 @@ def viz(permData_original):
     country_count.insert(0, titileRow)
     #output to csv file
     outputCsv('./output/viz/PERM_Peers/ctryAbbr_count.csv', country_count)
-
 
 
     ######process .csv files for geomaping in Plotly
@@ -498,22 +498,6 @@ if (len(sys.argv) > 1):
             q3(permData)
         elif (sys.argv[1] == 'viz'):
             viz(permData)
-
-######## TESTING CODE ###############
-# getCount(permData)
-# getCertifiedRatio(permData)
-# print "*" * 70
-# permData_nonH1B = getNonH1B(permData)
-# getCount(permData_nonH1B)
-# getCertifiedRatio(permData_nonH1B)
-# print "*" * 70
-# permData_ComputerMajor = getComputerMajor(permData)
-# getCount(permData_ComputerMajor)
-# getCertifiedRatio(permData_ComputerMajor)
-# print "*" * 70
-
-
-
 
 
 

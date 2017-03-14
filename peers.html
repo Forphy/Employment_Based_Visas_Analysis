@@ -6,26 +6,121 @@
     <style>
         #title {
             font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
-            font-size: 30px;
+            font-size: 40px;
         }
     </style>
 </head>
    
 <body>
     
-    <center><p id="title">Secret Page: Peers comparison</br>Do you know your peers(people majoring in Computer-related subjects)?</p></center>
+    <center><p id="title">Secret Page: Peers comparison</p></center>
+    <p style="font-size:30px;">Do you know your peers (people majoring in Computer-related subjects)?</p>
+    
+    <center>
+        <p>.</br> .</br> .</br> .</br> .</br></p>
+        <div id="PermEduiframeDIV"></div>
+        <p>.</br> .</br> .</br> .</br> .</br></p>
+        <div id="PermGradiframeDIV"></div>
+        <p>.</br> .</br> .</br> .</br> .</br></p>
+        <div id="PermExpiframeDIV"></div>
+        <p style="font-size:30px;">.</br> .</br> .</br> .</br> .</br>Where are they From?</p>
+    </center>
+        <button onclick="disIn();">Disable India</button>
+        <button onclick="disInCn();">Disable India, China</button>
+        <button onclick="disInCnCa();">Disable India, China, Canada</button>
+        <div id="PermNatniframeDIV"></div>
     
     
     
     
     <script>
-    /*
-    # Do you know your peers(people major in CS or CE)?
-    # what are their highest degree? (pie chart)
-    # how long have they been graduated? (bar chart)
-    # how experienced are they in CS/CE field? (bar chart)
-    # where do they come from?
-    */
+        /*
+        # Do you know your peers(people major in CS or CE)?
+        # what are their highest degree? (pie chart)
+        # how long have they been graduated? (bar chart)
+        # how experienced are they in CS/CE field? (bar chart)
+        # where do they come from?
+        */
+        var PermEduPie = document.createElement("IFRAME");
+        PermEduPie.setAttribute("id", "PermEduPie");
+        PermEduPie.src = "./output/viz/PERM_Peers/highest_degrees.svg";
+        PermEduPie.width = "1200";
+        PermEduPie.height = "500";
+        PermEduPie.setAttribute("align", "left");
+        PermEduPie.style.border = "none";
+        document.getElementById("PermEduiframeDIV").appendChild(PermEduPie);
+
+        var PermGradBar = document.createElement("IFRAME");
+        PermGradBar.setAttribute("id", "PermGradBar");
+        PermGradBar.src = "./output/viz/PERM_Peers/gradYear_Count.svg";
+        PermGradBar.width = "1200";
+        PermGradBar.height = "500";
+        PermGradBar.setAttribute("align", "left");
+        PermGradBar.style.border = "none";
+        document.getElementById("PermGradiframeDIV").appendChild(PermGradBar);
+
+        var PermExpBar = document.createElement("IFRAME");
+        PermExpBar.setAttribute("id", "PermExpBar");
+        PermExpBar.src = "./output/viz/PERM_Peers/monExp_Count.svg";
+        PermExpBar.width = "1200";
+        PermExpBar.height = "500";
+        PermExpBar.setAttribute("align", "left");
+        PermExpBar.style.border = "none";
+        document.getElementById("PermExpiframeDIV").appendChild(PermExpBar);
+        
+        var PermNatnChoplt = document.createElement("IFRAME");
+        PermNatnChoplt.setAttribute("id", "PermNatnChoplt");
+        PermNatnChoplt.src = "./output/viz/PERM_Peers/whereTheyFrom.html";
+        PermNatnChoplt.width = "1200";
+        PermNatnChoplt.height = "800";
+        PermNatnChoplt.setAttribute("align", "left");
+        PermNatnChoplt.style.border = "none";
+        document.getElementById("PermNatniframeDIV").appendChild(PermNatnChoplt);
+        
+        function disIn() {
+            var PermNatniframeDIV = document.getElementById("PermNatniframeDIV");
+            while(PermNatniframeDIV.firstChild){
+                PermNatniframeDIV.removeChild(PermNatniframeDIV.firstChild);
+            }
+            var PermNatnChoplt = document.createElement("IFRAME");
+            PermNatnChoplt.setAttribute("id", "PermNatnChoplt");
+            PermNatnChoplt.src = "./output/viz/PERM_Peers/whereTheyFrom_NoIndia.html";
+            PermNatnChoplt.width = "1200";
+            PermNatnChoplt.height = "800";
+            PermNatnChoplt.setAttribute("align", "left");
+            PermNatnChoplt.style.border = "none";
+            document.getElementById("PermNatniframeDIV").appendChild(PermNatnChoplt);
+        }
+        
+        function disInCn() {
+            var PermNatniframeDIV = document.getElementById("PermNatniframeDIV");
+            while(PermNatniframeDIV.firstChild){
+                PermNatniframeDIV.removeChild(PermNatniframeDIV.firstChild);
+            }
+            var PermNatnChoplt = document.createElement("IFRAME");
+            PermNatnChoplt.setAttribute("id", "PermNatnChoplt");
+            PermNatnChoplt.src = "./output/viz/PERM_Peers/whereTheyFrom_NoIndiaChina.html";
+            PermNatnChoplt.width = "1200";
+            PermNatnChoplt.height = "800";
+            PermNatnChoplt.setAttribute("align", "left");
+            PermNatnChoplt.style.border = "none";
+            document.getElementById("PermNatniframeDIV").appendChild(PermNatnChoplt);
+        }
+        
+        function disInCnCa() {
+            var PermNatniframeDIV = document.getElementById("PermNatniframeDIV");
+            while(PermNatniframeDIV.firstChild){
+                PermNatniframeDIV.removeChild(PermNatniframeDIV.firstChild);
+            }
+            var PermNatnChoplt = document.createElement("IFRAME");
+            PermNatnChoplt.setAttribute("id", "PermNatnChoplt");
+            PermNatnChoplt.src = "./output/viz/PERM_Peers/whereTheyFrom_NoIndiaChinaCanada.html";
+            PermNatnChoplt.width = "1200";
+            PermNatnChoplt.height = "800";
+            PermNatnChoplt.setAttribute("align", "left");
+            PermNatnChoplt.style.border = "none";
+            document.getElementById("PermNatniframeDIV").appendChild(PermNatnChoplt);
+        }
     </script>
 </body>
 </html>

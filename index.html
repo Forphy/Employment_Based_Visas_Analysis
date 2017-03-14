@@ -2,21 +2,16 @@
 <html>
 <head>
 <style>
-    #title {
-        font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
-        font-size: 30px;
-    }
-    
     /* for the menu bar */
     ul, #subMenu{
         list-style-type: none;
         margin: 0;
         padding: 0;
         overflow: hidden;
-        background-color: #333;
+        background-color: #ffebcc;
         width: 100%;
         position: relative;
-        display: inline-block;
+        display: block;
     }
 
     li {
@@ -31,39 +26,32 @@
 
     li a {
         display: block;
-        color: white;
+        color: #111;
         text-align: center;
         padding: 14px 16px;
         text-decoration: none;
+        font-size: 20px;
     }
 
-    li a:hover:not(.active), #subMenu a:hover {
-        background-color: #111;
+    li .clickable:hover, #subMenu a:hover {
+        background-color: #ffa31a;
     }
     
     .active {
-        background-color: #4CAF50;
+        background-color: #ffb84d;
     }
     
     /* for the subMenu */
-/*
-    #subMenu {
-        overflow: hidden;
-        background-color: #333;
-        font-family: Arial;
-        width: 100%;
-    }
-*/
+
 
     #subMenu a {
         float: right;
         border-right:1px solid #bbb;
         font-size: 16px;
-        color: white;
+        color: #666666;
         text-align: center;
         padding: 5px 5px;
         text-decoration: none;
-        width: 49%;
     }
     
     
@@ -117,22 +105,24 @@
 </style>
 </head>
 
-<body>
-    <center><p id="title">Pathway from F-1 Student to U.S. Citizen<br>
-        (Companies and Waiting-time analysis)
-    </p></center>
+<body style="background-color:#ffffff;">
+    <center>
+        <p style="font-family:'Palatino Linotype', 'Book Antiqua', Palatino, serif;font-size: 30px;">Pathway from F-1 Student to U.S. Citizen</p>
+        <p style="font-size:22px;">(Which companies and visa types are most guaranteed?)</p>
+    </center>
     
     <ul>
       <li><a>F-1 STUDENT</a></li>
       <li><a id="H1B"
-             onclick="selectH1B()">H-1B VISA</a></li>
-      <li><a class="active"
-             onclick="barSwitch('EB'); createSubMenu();"
+             class="clickable"
+             onclick="selectH1BCompany();">H-1B VISA</a></li>
+      <li><a class="clickable active"
+             onclick="selectCompany();"
              id="EB">EB VISAS (GREEN CARD)</a></li>
-      <li><a>U.S. CITIZENSHIP</a></li>
+      <li><a>U.S. CITIZEN</a></li>
     </ul>
     
-    <div id="subMenu"></div>
+    <center><div id="subMenu"></div></center>
     
     <div id="PERMbarChartDIV"></div>
 
@@ -157,6 +147,9 @@
     var isSubMenuCreated = false;
     var isWTSelected = false;
     var isComSelected = false;
+    var isH1BComSelected = false;
+    
+    createSubMenu();
     
     function setClickedaRtrState(state) {
         isClicked = true;
@@ -209,17 +202,45 @@
             isSubMenuCreated = true;
             var subMenu = document.getElementById("subMenu");
             var comA = document.createElement('a');
-            comA.innerHTML = "Company";
+            comA.innerHTML = "Company Analysis";
             comA.setAttribute("id", "comA");
             comA.setAttribute("onClick", "selectCompany()")
+            comA.style.width = "10%";
             
             var wtA = document.createElement('a');
             wtA.setAttribute("id", "wtA");
-            wtA.innerHTML = "Waiting Time";
-            wtA.setAttribute("onClick", "selectWT()")
+            wtA.innerHTML = "Wait-Time Analysis";
+            wtA.setAttribute("onClick", "selectWT()");
+            wtA.style.width = "10%";
             
+            var comH = document.createElement('a');
+            comH.setAttribute("id", "comH");
+            comH.innerHTML = "Company Analysis";
+            comH.setAttribute("onClick", "selectH1BCompany();");
+            comH.style.width = "21%";
+            
+            var dummyA = document.createElement('a');
+            dummyA.innerHTML = ".";
+            dummyA.style.width = "28%";
+            dummyA.style.color = "#ffebcc";
+            dummyA.style.backgroundColor = "white"
+            var dummyB = document.createElement('a');
+            dummyB.innerHTML = ".";
+            dummyB.style.width = "24.3%";
+            dummyB.style.color = "#ffebcc";
+            dummyB.style.backgroundColor = "white"
+            var dummyC = document.createElement('a');
+            dummyC.innerHTML = ".";
+            dummyC.style.width = "2%";
+            dummyC.style.color = "#ffebcc";
+            dummyC.style.backgroundColor = "white"
+            
+            subMenu.appendChild(dummyA);
             subMenu.appendChild(wtA);
             subMenu.appendChild(comA);
+            subMenu.appendChild(dummyC);
+            subMenu.appendChild(comH);
+            subMenu.appendChild(dummyB);
         }
     }
     function deleteSubMenu () {
@@ -233,11 +254,11 @@
         if (!isComSelected) {
             isComSelected = true;
             isWTSelected = false;
-            /* highlight the selected tab */
-            var comA = document.getElementById("comA");
-            var wtA = document.getElementById("wtA");
-            comA.setAttribute("class", "active");
-            wtA.classList.remove("active");
+            isH1BComSelected = false;
+            /* highlight and de-highlight the selected subTab */
+            hightLightSubMenuTab('comA');
+            /* highlight the selected menu tab */
+            barSwitch('EB');
             /* delete elements for EB WaitingTime */
             var EBWTiframeDIV = document.getElementById("EBWTiframeDIV");
             while(EBWTiframeDIV.firstChild){
@@ -263,7 +284,7 @@
             /* create elements for PERM company */
             var PERMbarChart = document.createElement("IFRAME");
             PERMbarChart.setAttribute("id", "PERMbarChart");
-            PERMbarChart.src = "./output/viz/PERM_Companies/svg/NY.svg";
+            PERMbarChart.src = "./output/viz/PERM_Companies/svg/CA.svg";
             PERMbarChart.width = "700";
             PERMbarChart.height = "500";
             PERMbarChart.setAttribute("align", "left");
@@ -287,11 +308,11 @@
         if (!isWTSelected) {
             isWTSelected = true;
             isComSelected = false;
-            /* highlight the selected tab */
-            var comA = document.getElementById("comA");
-            var wtA = document.getElementById("wtA");
-            wtA.setAttribute("class", "active");
-            comA.classList.remove("active");
+            isH1BComSelected = false;
+            /* highlight/de-highlight the selected sub menue tab */
+            hightLightSubMenuTab('wtA');
+            /* highlight the selected menu tab */
+            barSwitch('EB');
             /* delete elements for PERM company */
             var PERMbarChartDIV = document.getElementById("PERMbarChartDIV");
             while(PERMbarChartDIV.firstChild){
@@ -318,54 +339,76 @@
             createEBWTTable();
         }
     }
-    function selectH1B() {
-        barSwitch('H1B');
-        deleteSubMenu(); 
-        /* delete elements of PERM company */
-        var PERMbarChartDIV = document.getElementById("PERMbarChartDIV");
-        while(PERMbarChartDIV.firstChild){
-            PERMbarChartDIV.removeChild(PERMbarChartDIV.firstChild);
-        }
-        var PERMchoroplethDIV = document.getElementById("PERMchoroplethDIV");
-        while(PERMchoroplethDIV.firstChild){
-            PERMchoroplethDIV.removeChild(PERMchoroplethDIV.firstChild);
-        }
-        var stateTableDIV = document.getElementById("stateTableDIV");
-        while(stateTableDIV.firstChild){
-            stateTableDIV.removeChild(stateTableDIV.firstChild);
-        }
-        /* delete elements of EB Waiting Time */
-        var EBWTiframeDIV = document.getElementById("EBWTiframeDIV");
-        while(EBWTiframeDIV.firstChild){
-            EBWTiframeDIV.removeChild(EBWTiframeDIV.firstChild);
-        }
-        var EBWTTableDIV = document.getElementById("EBWTTableDIV");
-        while(EBWTTableDIV.firstChild){
-            EBWTTableDIV.removeChild(EBWTTableDIV.firstChild);
-        }
-        
-        /* create elements of H1B companies*/
-        var H1BbarChart = document.createElement("IFRAME");
-        H1BbarChart.setAttribute("id", "PERMbarChart");
-        H1BbarChart.src = "./output/viz/H1B_Companies/svg/NY.svg";
-        H1BbarChart.width = "700";
-        H1BbarChart.height = "500";
-        H1BbarChart.setAttribute("align", "left");
-        H1BbarChart.style.border = "none";
-        document.getElementById("PERMbarChartDIV").appendChild(H1BbarChart);
+    function selectH1BCompany() {
+        if (!isH1BComSelected) {
+            isH1BComSelected = true;
+            isWTSelected = false;
+            isComSelected = false;
+            /* Highlight the menu tab */
+            barSwitch('H1B');
+            /* Highlight and de-hightlight the sub menu tab of EB */
+            hightLightSubMenuTab('comH');
+            /* delete elements of PERM company */
+            var PERMbarChartDIV = document.getElementById("PERMbarChartDIV");
+            while(PERMbarChartDIV.firstChild){
+                PERMbarChartDIV.removeChild(PERMbarChartDIV.firstChild);
+            }
+            var PERMchoroplethDIV = document.getElementById("PERMchoroplethDIV");
+            while(PERMchoroplethDIV.firstChild){
+                PERMchoroplethDIV.removeChild(PERMchoroplethDIV.firstChild);
+            }
+            var stateTableDIV = document.getElementById("stateTableDIV");
+            while(stateTableDIV.firstChild){
+                stateTableDIV.removeChild(stateTableDIV.firstChild);
+            }
+            /* delete elements of EB Waiting Time */
+            var EBWTiframeDIV = document.getElementById("EBWTiframeDIV");
+            while(EBWTiframeDIV.firstChild){
+                EBWTiframeDIV.removeChild(EBWTiframeDIV.firstChild);
+            }
+            var EBWTTableDIV = document.getElementById("EBWTTableDIV");
+            while(EBWTTableDIV.firstChild){
+                EBWTTableDIV.removeChild(EBWTTableDIV.firstChild);
+            }
 
-        var H1Bchoropleth = document.createElement("IFRAME");
-        H1Bchoropleth.setAttribute("id", "PERMchoropleth");
-        H1Bchoropleth.src = "./output/viz/H1B_Companies/_H1B_Choropleth.html";
-        H1Bchoropleth.width = "700";
-        H1Bchoropleth.height = "480";
-        H1Bchoropleth.setAttribute("align", "left");
-        H1Bchoropleth.style.border = "none";
-        document.getElementById("PERMchoroplethDIV").appendChild(H1Bchoropleth);
+            /* create elements of H1B companies*/
+            var H1BbarChart = document.createElement("IFRAME");
+            H1BbarChart.setAttribute("id", "PERMbarChart");
+            H1BbarChart.src = "./output/viz/H1B_Companies/svg/NY.svg";
+            H1BbarChart.width = "700";
+            H1BbarChart.height = "500";
+            H1BbarChart.setAttribute("align", "left");
+            H1BbarChart.style.border = "none";
+            document.getElementById("PERMbarChartDIV").appendChild(H1BbarChart);
 
-        createStateTable('H1B');
-        
-        
+            var H1Bchoropleth = document.createElement("IFRAME");
+            H1Bchoropleth.setAttribute("id", "PERMchoropleth");
+            H1Bchoropleth.src = "./output/viz/H1B_Companies/_H1B_Choropleth.html";
+            H1Bchoropleth.width = "700";
+            H1Bchoropleth.height = "480";
+            H1Bchoropleth.setAttribute("align", "left");
+            H1Bchoropleth.style.border = "none";
+            document.getElementById("PERMchoroplethDIV").appendChild(H1Bchoropleth);
+
+            createStateTable('H1B');                                        
+        }
+    }
+    function hightLightSubMenuTab(whichOne) {
+        /* de-hightlight all the sub menu tab of EB */
+        var comA = document.getElementById("comA");
+        var wtA = document.getElementById("wtA");
+        var comH = document.getElementById("comH");
+        comH.classList.remove("active");
+        wtA.classList.remove("active");
+        comA.classList.remove("active");
+        /* Hightlight the right sub menu tab of H1B */
+        if (whichOne == 'comA') {
+            comA.classList.add("active");
+        } else if (whichOne == 'wtA') {
+            wtA.classList.add("active");
+        } else if (whichOne == 'comH') {
+            comH.classList.add("active");
+        }
     }
     function createEBWTTable() {
         var EBWTTable = document.createElement("TABLE");

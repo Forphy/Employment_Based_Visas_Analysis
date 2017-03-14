@@ -22,7 +22,7 @@ US_STATES = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', '
 US_STATE_SHORT_dic = {'WA': 'Washington', 'DE': 'Delaware', 'WI': 'Wisconsin', 'WV': 'West Virginia', 'HI': 'Hawaii', 'FL': 'Florida', 'WY': 'Wyoming', 'NH': 'New Hampshire', 'NJ': 'New Jersey', 'NM': 'New Mexico', 'TX': 'Texas', 'LA': 'Louisiana', 'NC': 'North Carolina', 'ND': 'North Dakota', 'NE': 'Nebraska', 'TN': 'Tennessee', 'NY': 'New York', 'PA': 'Pennsylvania', 'CA': 'California', 'NV': 'Nevada', 'VA': 'Virginia', 'CO': 'Colorado', 'AK': 'Alaska', 'AL': 'Alabama', 'AR': 'Arkansas', 'VT': 'Vermont', 'IL': 'Illinois', 'GA': 'Georgia', 'IN': 'Indiana', 'IA': 'Iowa', 'OK': 'Oklahoma', 'AZ': 'Arizona', 'ID': 'Idaho', 'CT': 'Connecticut', 'ME': 'Maine', 'MD': 'Maryland', 'MA': 'Massachusetts', 'OH': 'Ohio', 'UT': 'Utah', 'MO': 'Missouri', 'MN': 'Minnesota', 'MI': 'Michigan', 'RI': 'Rhode Island', 'KS': 'Kansas', 'MT': 'Montana', 'MS': 'Mississippi', 'SC': 'South Carolina', 'KY': 'Kentucky', 'OR': 'Oregon', 'SD': 'South Dakota'}
 
 
-def plotPermChoropleth (dataFilePath, outputPath):
+def plotPermChoropleth (ebOrH1b, dataFilePath, outputPath):
     df = pd.read_csv(dataFilePath)
     for col in df.columns:
         df[col] = df[col].astype(str)
@@ -52,8 +52,12 @@ def plotPermChoropleth (dataFilePath, outputPath):
                     len = 300
                 )
             ) ]
+    if (ebOrH1b == 'perm'):
+        plotTitle = '<br>2016 EB-2/EB-3 Applicants by State'
+    elif (ebOrH1b == 'h1b'):
+        plotTitle = '<br>2016 H1B Applicants by State'
     layout = dict(
-            title = '<br>2016 EB-2/EB-3 Applicants by State',
+            title = plotTitle,
             geo = dict(
                 scope='usa',
                 projection=dict( type='albers usa' ),
@@ -108,7 +112,8 @@ def plotPermPeers(outputPath) :
     with open('./output/queries/q1_1.csv', 'rb') as csvfile:
         degreeData = list(csv.reader(csvfile))
     # Bachelor's	Master's	Doctorate
-    pie_chart = pygal.Pie(inner_radius=.4)
+    custom_style = Style(label_font_size=18, legend_font_size=25, title_font_size=28)
+    pie_chart = pygal.Pie(inner_radius=.4, style=custom_style, legend_at_bottom=True)
     pie_chart.title = 'What are their highest degree?'
     pie_chart.add("Bachelor's", int(degreeData[1][0]))
     pie_chart.add("Master's", int(degreeData[1][1]))
@@ -196,10 +201,10 @@ if __name__ == "__main__":
 
     if (len(sys.argv) > 1):
         if (sys.argv[1] == "perm"):
-            plotPermChoropleth('./output/viz/PERM_Companies/_PERM_StateByCase.csv', './output/viz/PERM_Companies/_PERM_Choropleth.html')
+            plotPermChoropleth('perm', './output/viz/PERM_Companies/_PERM_StateByCase.csv', './output/viz/PERM_Companies/_PERM_Choropleth.html')
             plotPermBarCharts('./output/viz/PERM_Companies/', './output/viz/PERM_Companies/svg/')
         elif (sys.argv[1] == "h1b"):
-            plotPermChoropleth('./output/viz/H1B_Companies/state_count_workers.csv', './output/viz/H1B_Companies/_H1B_Choropleth.html')
+            plotPermChoropleth('h1b', './output/viz/H1B_Companies/state_count_workers.csv', './output/viz/H1B_Companies/_H1B_Choropleth.html')
             plotPermBarCharts('./output/viz/H1B_Companies/', './output/viz/H1B_Companies/svg/')
         elif (sys.argv[1] == "peers"):
             plotPermPeers('./output/viz/PERM_Peers/')
