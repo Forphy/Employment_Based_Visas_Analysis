@@ -16,7 +16,8 @@ import pygal
 import plotly.graph_objs as go
 from pygal.style import Style
 from pygal.style import DarkenStyle
-darken_style = DarkenStyle('#ff8723', step = 20)
+
+
 
 US_STATES = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
 US_STATE_SHORT_dic = {'WA': 'Washington', 'DE': 'Delaware', 'WI': 'Wisconsin', 'WV': 'West Virginia', 'HI': 'Hawaii', 'FL': 'Florida', 'WY': 'Wyoming', 'NH': 'New Hampshire', 'NJ': 'New Jersey', 'NM': 'New Mexico', 'TX': 'Texas', 'LA': 'Louisiana', 'NC': 'North Carolina', 'ND': 'North Dakota', 'NE': 'Nebraska', 'TN': 'Tennessee', 'NY': 'New York', 'PA': 'Pennsylvania', 'CA': 'California', 'NV': 'Nevada', 'VA': 'Virginia', 'CO': 'Colorado', 'AK': 'Alaska', 'AL': 'Alabama', 'AR': 'Arkansas', 'VT': 'Vermont', 'IL': 'Illinois', 'GA': 'Georgia', 'IN': 'Indiana', 'IA': 'Iowa', 'OK': 'Oklahoma', 'AZ': 'Arizona', 'ID': 'Idaho', 'CT': 'Connecticut', 'ME': 'Maine', 'MD': 'Maryland', 'MA': 'Massachusetts', 'OH': 'Ohio', 'UT': 'Utah', 'MO': 'Missouri', 'MN': 'Minnesota', 'MI': 'Michigan', 'RI': 'Rhode Island', 'KS': 'Kansas', 'MT': 'Montana', 'MS': 'Mississippi', 'SC': 'South Carolina', 'KY': 'Kentucky', 'OR': 'Oregon', 'SD': 'South Dakota'}
@@ -57,7 +58,7 @@ def plotPermChoropleth (ebOrH1b, dataFilePath, outputPath):
     elif (ebOrH1b == 'h1b'):
         plotTitle = '<br>2016 H1B Applicants by State'
     layout = dict(
-            title = plotTitle,
+            # title = "plotTitle",
             geo = dict(
                 scope='usa',
                 projection=dict( type='albers usa' ),
@@ -81,6 +82,7 @@ def plotPermBarCharts (dataFilePath, outputPath) :
     for short_name in US_STATES:
         with open(dataFilePath + short_name + '.csv', 'rb') as csvfile:
             stateData = list(csv.reader(csvfile))
+        darken_style = DarkenStyle('#ff8723', step = 20)
         custom_style = Style(
               tooltip_font_size = 18,
               legend_font_size = 13,
@@ -90,11 +92,15 @@ def plotPermBarCharts (dataFilePath, outputPath) :
         bar_chart = pygal.HorizontalBar(
                 legend_box_size = 10,
                 hieght = 100,
-                style = custom_style,
+                style = darken_style,
                 print_values = True,
-                margin = 20
+                margin = 20,
+                # show_legend=False,
+                legend_at_bottom=True,
+                tooltip_fancy_mode=True,
+                tooltip_border_radius=10
                 )
-        bar_chart.title = 'Top 30 foreign-worker-friendly Companies in ' + US_STATE_SHORT_dic[short_name]
+        # bar_chart.title = 'Top 30 foreign-worker-friendly Companies in</br>' + US_STATE_SHORT_dic[short_name]
         topX = 20
         if (short_name == 'MO'):
             topX = 17
