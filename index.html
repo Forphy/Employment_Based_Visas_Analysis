@@ -147,6 +147,7 @@
     
     <div id="stateTableDIV"></div>
     <div id="EBWTTableDIV"></div>
+    <div id="hiddenButtonsDIV"</div>
     <p id="lineBreaker">.</br> .</br> .</br> .</br> .</br></p>
     <div id="authorInfo"></div>
 
@@ -285,6 +286,7 @@
             /* delete elements for EB WaitingTime */
             delAllEleInDiv("EBWTiframeDIV");
             delAllEleInDiv("EBWTTableDIV");
+            delAllEleInDiv("hiddenButtonsDIV");
             /* delete elements of H1B company */
             delAllEleInDiv("PERMbarChartDIV");
             delAllEleInDiv("PERMchoroplethDIV");
@@ -346,6 +348,7 @@
             
             createEBWTTable();
             createDescription('wtA');
+            createHiddenButtons();
         }
     }
     function selectH1BCompany() {
@@ -367,6 +370,7 @@
             delAllEleInDiv("EBWTiframeDIV");
             delAllEleInDiv("EBWTTableDIV");
             delAllEleInDiv("DescriptionDIV");
+            delAllEleInDiv("hiddenButtonsDIV");
             /* create elements of H1B companies
                re-use PERM's DIVs for same graphs'*/
             var H1BbarChart = document.createElement("IFRAME");
@@ -511,6 +515,26 @@
             mainDescrp.innerHTML = "For most of us who will obtain a U.S. Master's degree, we are most likely to apply for EB-2 or EB-3 Immigrant Visas.</br> To apply for EB-2/3, we have to obtain a permanent labor certification (PERM) from US Dept of Labor.</br>California, Texas, New York are the states with most PERM applicants.</br>The top companies supporting PERM, however, are very different than those supporting H-1B Visas.</br> Google, Apple, Intel, Yahoo, Cisco, Facebook are companeis that support a great amount of applicants."
         }
         descriptionDIV.appendChild(mainDescrp);
+    }
+    function createHiddenButtons() {
+        var hiddenButtonsDIV = document.getElementById("hiddenButtonsDIV");
+        var initTop = 1000;
+        for (var i = 0; i < 10; i++) {
+            var displayStackedChart = document.createElement("button");
+            displayStackedChart.setAttribute("onclick", "switchWTToHidden("+i+");");
+            displayStackedChart.style.position = "absolute";
+            displayStackedChart.style.left = "1000px";
+            displayStackedChart.style.top = (initTop + i*15) + "px";
+            displayStackedChart.innerHTML = "displayHiddenGraph_" + i;
+            hiddenButtonsDIV.appendChild(displayStackedChart);
+        }
+    }
+    function switchWTToHidden(graphNum) {
+        if (graphNum < 5) {
+            document.getElementById("EB_WT").src = "./output/viz/EB_WaitingTime/hiddenGraph_"+graphNum+".svg";
+        } else {
+            document.getElementById("EB_WT").src = "./output/viz/EB_WaitingTime/hiddenGraph_"+graphNum+".html";
+        }
     }
     
     
